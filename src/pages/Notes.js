@@ -36,6 +36,7 @@ const Notes = () => {
     );
   }
 
+  //config for masonry library
   const breakpoints = {
     default: 3,
     1100: 2,

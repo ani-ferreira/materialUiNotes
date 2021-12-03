@@ -1,5 +1,5 @@
 import { makeStyles } from "@mui/styles";
-import { AppBar, Toolbar, Button } from "@mui/material";
+import { AppBar, Toolbar, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => {
@@ -18,16 +18,20 @@ const Layout = ({ children }) => {
   const classes = useStyles();
   return (
     <div>
-      <AppBar>
+      <AppBar sx={{ backgroundColor: "transparent", height: "10%" }}>
         <Toolbar>
-          <Button
+          <Typography
             component={Link}
-            to="/create"
-            variant="contained"
+            variant="h5"
             color="secondary"
+            to="/"
+            sx={{
+              textDecoration: "none",
+              p: 3,
+            }}
           >
-            crear nota
-          </Button>
+            OrganizaciónApp
+          </Typography>
         </Toolbar>
       </AppBar>
       <div className={classes.page}>
