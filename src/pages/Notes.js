@@ -1,37 +1,46 @@
 import React, { useEffect, useState } from "react";
-import { Typography, Container } from "@mui/material";
-import NoteCard from "./components/NoteCard";
+import { Typography, Paper } from "@mui/material";
+import NoteCard from "../components/NoteCard";
 import Masonry from "react-masonry-css";
+import LoadingIcon from "../components/LoadingIcon";
+import { db } from "../firebase-config";
+import { collection, deleteDoc, getDocs, doc } from "firebase/firestore";
+import { ToastContainer, toast } from "react-toastify";
 
 const Notes = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [notes, setNotes] = useState([]);
+  const notesCollectionRef = collection(db, "notes");
 
   useEffect(() => {
-    setIsLoading(true);
-    fetch("https://react-notes-47db9-default-rtdb.firebaseio.com/notes.json")
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        const notesData = [];
+    const getNotes = async () => {
+      const data = await getDocs(notesCollectionRef);
+      console.log(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      setNotes(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      setIsLoading(false);
+    };
 
-        for (const key in data) {
-          const noteData = {
-            id: key,
-            ...data[key],
-          };
-          notesData.push(noteData);
-        }
-        setIsLoading(false);
-        setNotes(notesData);
-      });
+    getNotes();
   }, []);
+
+  const deleteHandler = (id) => {
+    const noteDoc = doc(db, "notes", id);
+    deleteDoc(noteDoc).then(() => {
+      toast.error("Nota eliminada!", {
+        position: toast.POSITION.BOTTOM_LEFT,
+        autoClose: 3000,
+        pauseOnFocusLoss: false,
+      });
+    });
+
+    const newNotes = notes.filter((note) => note.id !== id);
+    setNotes(newNotes);
+  };
 
   if (isLoading) {
     return (
       <section>
-        <p>Loading...</p>
+        <LoadingIcon />
       </section>
     );
   }
@@ -44,13 +53,19 @@ const Notes = () => {
   };
 
   return (
-    <Container>
+    <Paper
+      sx={{
+        backgroundColor: "rgba(255, 255, 255, 0.068)",
+        marginTop: 2,
+      }}
+    >
+      <ToastContainer />
       <Typography
         variant="h3"
         component="h2"
-        sx={{ p: 3 }}
+        sx={{ p: 4 }}
         align="center"
-        color="secondary"
+        color="primary"
       >
         Notas
       </Typography>
@@ -62,11 +77,14 @@ const Notes = () => {
       >
         {notes.map((note) => (
           <div key={note.id}>
-            <NoteCard note={note} />
+            <NoteCard
+              note={note}
+              onDelete={deleteHandler.bind(null, note.id)}
+            />
           </div>
         ))}
       </Masonry>
-    </Container>
+    </Paper>
   );
 };
 

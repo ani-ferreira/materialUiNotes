@@ -1,60 +1,38 @@
-import { CardMedia, Container, Typography, Button } from "@mui/material";
-import { Link } from "react-router-dom";
+import Switch from "@mui/material/Switch";
+import { useState } from "react";
+import Welcome from "../components/Welcome";
+import HomeLinks from "../components/HomeLinks";
 
-const Home = () => {
+const Home = (props) => {
+  //do I need cookies to show a welcome page just once?
+  //when I figure it out, change state to true, uncomment and import useeffect
+
+  const [welcomePage, setWelcomePage] = useState(false);
+
+  /* useEffect(() => {
+    const timer = setTimeout(() => setWelcomePage(false), 1700);
+    return () => clearTimeout(timer);
+  }, []); */
+
   return (
-    <Container
-      sx={{
-        display: "flex",
-        height: "100vh",
-        alignItems: "center",
-      }}
-    >
-      <Container>
-        <Container>
-          <Typography variant="h2" sx={{ p: 3, textAlign: "center" }}>
-            Titulo
-          </Typography>
-          <Typography sx={{ p: 2, textAlign: "center" }}>
-            in purus at libero tempor iaculis. Vestibulum quis bibendum metus,
-            vitae la magna aliquam eu. Donec a dictum erat. Nam eget accumsan
-            orci.
-          </Typography>
-          <Button
-            component={Link}
-            to="/create"
-            variant="contained"
-            color="secondary"
-            sx={{ marginLeft: "25%", marginTop: "5%", p: 2, width: "55%" }}
-          >
-            crear nota
-          </Button>
-          <Button
-            component={Link}
-            to="/notes"
-            variant="contained"
-            color="secondary"
-            sx={{ marginLeft: "25%", marginTop: "5%", p: 2, width: "55%" }}
-          >
-            notas
-          </Button>
-        </Container>
-      </Container>
-      <Container>
-        <CardMedia
-          image="/img/character.svg"
-          alt="image"
-          sx={{
-            p: 1,
-            margin: "auto",
-            height: 580,
-            width: "79%",
-
-            objectFit: "cover",
-          }}
-        />
-      </Container>
-    </Container>
+    <>
+      {welcomePage && <Welcome />}
+      {!welcomePage && (
+        <>
+          <Switch
+            label="label"
+            onChange={props.onChangeValue}
+            sx={{
+              marginTop: 4,
+              marginLeft: 1,
+              position: "absolute",
+              zIndex: 2000,
+            }}
+          />
+          <HomeLinks />
+        </>
+      )}
+    </>
   );
 };
 

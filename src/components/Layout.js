@@ -1,11 +1,11 @@
 import { makeStyles } from "@mui/styles";
-import { AppBar, Toolbar, Typography } from "@mui/material";
+import { AppBar, Toolbar, Typography, Paper } from "@mui/material";
 import { Link } from "react-router-dom";
+import EventNoteIcon from "@mui/icons-material/EventNote";
 
 const useStyles = makeStyles((theme) => {
   return {
     page: {
-      background: "#f9f9f9",
       width: "100%",
       minHeight: "100vh",
       justifyContent: "center",
@@ -17,9 +17,10 @@ const useStyles = makeStyles((theme) => {
 const Layout = ({ children }) => {
   const classes = useStyles();
   return (
-    <div>
-      <AppBar sx={{ backgroundColor: "transparent", height: "10%" }}>
-        <Toolbar>
+    <Paper>
+      <AppBar style={{ background: "transparent" }}>
+        <Toolbar className="nav">
+          <EventNoteIcon color="secondary" sx={{ fontSize: "2rem" }} />
           <Typography
             component={Link}
             variant="h5"
@@ -38,7 +39,7 @@ const Layout = ({ children }) => {
         <div className={classes.toolbar}></div>
         {children}
       </div>
-    </div>
+    </Paper>
   );
 };
 

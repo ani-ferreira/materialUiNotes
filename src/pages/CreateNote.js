@@ -1,13 +1,21 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Container, Typography } from "@mui/material";
+import {
+  Button,
+  Container,
+  Typography,
+  TextField,
+  Radio,
+  RadioGroup,
+  FormControl,
+  FormLabel,
+  FormControlLabel,
+} from "@mui/material";
 import BackupIcon from "@mui/icons-material/Backup";
-import TextField from "@mui/material/TextField";
-import Radio from "@mui/material/Radio";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "../firebase-config";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const CreateNote = () => {
   const navigate = useNavigate();
@@ -37,31 +45,36 @@ const CreateNote = () => {
 
       setTitleError(false);
       setTextError(false);
-      fetch(
-        "https://react-notes-47db9-default-rtdb.firebaseio.com/notes.json",
-        {
-          method: "POST",
-          body: JSON.stringify(note),
-          headers: { "Content-Type": "application/json" },
-        }
-      ).then(() => {
-        navigate("/");
+
+      const notesCollectionRef = collection(db, "notes");
+
+      addDoc(notesCollectionRef, {
+        title: note.title,
+        body: note.text,
+        category: note.category,
+      }).then(() => {
+        toast.success("Nota guardada!", {
+          position: toast.POSITION.BOTTOM_LEFT,
+        });
+        navigate("/notes");
       });
     }
   };
 
   return (
-    <Container>
+    <Container
+      sx={{ backgroundColor: "rgba(255, 255, 255, 0.068)", p: 4, marginTop: 5 }}
+    >
+      {" "}
       <Typography
         variant="h3"
         sx={{ p: 3 }}
         component="h2"
         align="center"
-        color="secondary"
+        color="primary"
       >
         Crear una nota
       </Typography>
-
       <form noValidate autoComplete="off" onSubmit={handleSubmit}>
         <TextField
           sx={{
